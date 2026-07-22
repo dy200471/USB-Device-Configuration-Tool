@@ -1,6 +1,6 @@
-# HID Remapper 上位机（Qt / C++）
+# JiKong K1 上位机（Qt / C++）
 
-用于连接 **JiKong K1（RP2350）** 固件，通过 USB HID Feature Report
+用于连接 **JiKong K1** 固件，通过 USB HID Feature Report
 读取、编辑键盘按键映射并下发+持久化到设备。键盘 UI 复刻自网页配置工具
 `config-tool-web` 中“捕获触发键”弹窗的 108 键键盘 SVG 布局与外观。
 
