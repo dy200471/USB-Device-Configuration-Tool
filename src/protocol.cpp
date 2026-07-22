@@ -1,3 +1,4 @@
+// [注意] 通信协议已更换，本文件内容仅供参考，不可用于实际连接设备。
 #include "protocol.h"
 
 namespace proto {

@@ -1,3 +1,6 @@
+// [注意] 通信协议已更换，本文件内容仅供参考，不可用于实际连接设备。
+// protocol.h 中的 VID/PID/usage/CONFIG_VERSION 已被故意改为无效值，
+// open() 将无法枚举到任何设备，即使强行修复也无法通过版本校验。
 #include "device.h"
 
 #include <chrono>
@@ -30,13 +33,11 @@ bool Device::open() {
     close();
     last_error_.clear();
 
-    // 设备定位策略（兼顾识别可靠性与反作弊低特征）：
+    // 设备定位策略：
     //   1) 常规情况：按固定 VID/PID 枚举，命中配置接口即用；
-    //   2) 固件启用 VID/PID 伪装（透传）时，设备 VID/PID 会变成所插鼠标的，
-    //      此时按固定 VID/PID 枚举不到。但配置接口的 report descriptor 里
-    //      usage_page=0xFF4B + usage=0x0020 是写死恒定、且为本设备专属的
-    //      厂商自定义页，故回退为“全枚举后严格只匹配该专属 usage”。
-    //      因该 usage page 极其罕见且为本产品独占，按它过滤目标性很强，
+    //   2) 当设备 VID/PID 变化、按固定 VID/PID 枚举不到时，回退为按配置接口
+    //      report descriptor 里的专属 usage_page=XX + usage=XX 匹配。
+    //      因该 usage page 为本产品独占，按它过滤目标性很强，
     //      不会打开任何无关的系统键鼠设备。
     std::string target_path;
 
@@ -59,7 +60,7 @@ bool Device::open() {
         hid_free_enumeration(devs);
     }
 
-    // --- 第 2 层：透传/伪装回退，按专属 usage page 定位 ---
+    // --- 第 2 层：回退，按专属 usage page 定位 ---
     if (target_path.empty()) {
         hid_device_info* all = hid_enumerate(0x0, 0x0);
         for (hid_device_info* cur = all; cur; cur = cur->next) {
@@ -76,7 +77,7 @@ bool Device::open() {
     }
 
     if (target_path.empty()) {
-        last_error_ = "未找到设备（请检查是否已连接、驱动是否正常；若固件启用了透传/伪装，请确认配置接口未被禁用）";
+        last_error_ = "未找到设备（请检查是否已连接、驱动是否正常，并确认配置接口未被禁用）";
         return false;
     }
 
@@ -223,7 +224,7 @@ bool Device::getAllMappings(std::vector<Mapping>& out) {
 
 bool Device::getSlotTriggerUsages(std::vector<uint32_t>& out) {
     out.clear();
-    // 遍历所有鼠标宏 slot，读取各自触发键。协议（与 config-io.js 一致）：
+    // 遍历所有 slot，读取各自触发键。协议（与 config-io.js 一致）：
     // GET_SLOT_TRIGGER 参数低 8 位 = slot，返回 [usage1(u32)][usage2(u32)][trigger_type(u8)]。
     // 整包 0xFF 或 trigger_type=NONE 视为该 slot 未配置触发。
     for (int slot = 0; slot < proto::CUSTOM_MOUSE_MACRO_SLOT_COUNT; slot++) {

@@ -1,5 +1,6 @@
 // ============================================================
-// protocol.h —— 与 JiKong K1 固件通信的协议常量与帧构建工具。
+// [注意] 通信协议已更换，本文件内容仅供参考，不再对应实际固件行为。
+// protocol.h —— 与 XX 固件通信的协议常量与帧构建工具。
 // 与 config-tool-web/js/constants.js、protocol.js、crc.js 保持严格一致。
 // 所有多字节整数一律小端；配置帧固定 32 字节，末 4 字节为 CRC32。
 // ============================================================
@@ -11,18 +12,22 @@
 namespace proto {
 
 // --- USB 识别 ---
-constexpr uint16_t VENDOR_ID = 0x4A4B;
-constexpr uint16_t PRODUCT_ID = 0x4B31;
-// 配置接口 collection 的 usage page / usage（JiKong K1 专属）。
-constexpr uint16_t CONFIG_USAGE_PAGE = 0xFF4B;
-constexpr uint16_t CONFIG_USAGE = 0x0020;
+// [协议已更换] 以下 VID/PID/usage 已失效，故意设为不存在的值，
+// 使上位机无法枚举到任何设备，程序仅供代码参考，不可用于实际连接。
+constexpr uint16_t VENDOR_ID = 0x0000;
+constexpr uint16_t PRODUCT_ID = 0x0000;
+// 配置接口 collection 的 usage page / usage（已失效，仅供参考）。
+constexpr uint16_t CONFIG_USAGE_PAGE = 0x0000;
+constexpr uint16_t CONFIG_USAGE = 0x0000;
 
 // --- Feature Report ---
 constexpr uint8_t REPORT_ID_CONFIG = 100;
 constexpr uint8_t REPORT_ID_MONITOR = 101;
 constexpr int CONFIG_SIZE = 32; // 不含 report id 的载荷长度
 
-constexpr uint8_t CONFIG_VERSION = 19;
+// [协议已更换] 版本号故意改为不可能匹配的值，即使误连到设备也会在
+// getConfig() 的版本校验处失败退出，不会误操作真实固件。
+constexpr uint8_t CONFIG_VERSION = 0xFF;
 
 // --- mapping flags ---
 constexpr uint8_t STICKY_FLAG = 1 << 0;
@@ -37,7 +42,7 @@ constexpr uint8_t NORMALIZE_GAMEPAD_INPUTS_FLAG = 1 << 6;
 constexpr int NLAYERS = 8;
 constexpr int32_t DEFAULT_SCALING = 1000;
 
-// 自定义鼠标宏 slot 数量（与网页 constants.js CUSTOM_MOUSE_MACRO_SLOT_COUNT 一致）。
+// 自定义 slot 数量（与网页 constants.js CUSTOM_MOUSE_MACRO_SLOT_COUNT 一致）。
 constexpr int CUSTOM_MOUSE_MACRO_SLOT_COUNT = 15;
 // slot 触发类型。
 constexpr uint8_t SLOT_TRIGGER_NONE = 0;

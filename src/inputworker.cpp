@@ -25,7 +25,7 @@
 #include <unordered_set>
 
 // ------------------------------------------------------------
-// 扫描码(set1) -> HID 键盘 usage low byte 映射（与旧 keyhook 保持一致）。
+// 扫描码(set1) -> HID 键盘 usage low byte 映射表。
 // ------------------------------------------------------------
 static uint8_t base_table(uint32_t sc) {
     switch (sc) {
@@ -114,8 +114,7 @@ constexpr UINT WM_CMD_QUIT = WM_APP + 5;
 constexpr UINT_PTR KEEPALIVE_TIMER_ID = 1;
 constexpr UINT KEEPALIVE_INTERVAL_MS = 500;
 
-// 窗口类名前缀（中性、无语义）。真正的类名在运行期追加随机后缀生成，
-// 避免固定 magic string 被反作弊特征库收录、被 EnumWindows+GetClassName 定位。
+// 窗口类名前缀。真正的类名在运行期追加随机后缀生成，避免多开时类名冲突。
 constexpr wchar_t kWndClassPrefix[] = L"AppMsgWindow_";
 
 // 反跳滤波窗口：同一 usage 在该时间内的“反向”状态翻转视为抖动丢弃（毫秒）。
@@ -130,7 +129,7 @@ struct InputWorker::Impl {
 
     std::thread thread;
     HWND hwnd = nullptr;
-    std::wstring wnd_class;    // 运行期随机生成的窗口类名（避免固定 magic string 被特征库收录）
+    std::wstring wnd_class;    // 运行期随机生成的窗口类名（避免多开时类名冲突）
     ATOM wnd_atom = 0;         // RegisterClassExW 返回的 atom，用于精确注销
 
     // start() 与工作线程之间的就绪握手。
@@ -254,7 +253,7 @@ bool InputWorker::Impl::registerRawInput(bool enable) {
     rid.usUsagePage = 0x01; // Generic Desktop
     rid.usUsage = 0x06;     // Keyboard
     if (enable) {
-        // RIDEV_INPUTSINK：窗口即使不在前台也能收到输入（游戏中本窗口不聚焦）。
+        // RIDEV_INPUTSINK：窗口即使不在前台、未聚焦也能收到输入。
         rid.dwFlags = RIDEV_INPUTSINK;
         rid.hwndTarget = hwnd;
     } else {
@@ -434,7 +433,7 @@ void InputWorker::Impl::doConnect() {
             QStringLiteral("已连接，但当前固件版本不支持状态同步（需刷入 v1.1.0+）"), true);
         return;
     }
-    // 读取用户在网页里配置的鼠标宏“触发键”（slot_triggers）作为可监控白名单。
+    // 读取用户在网页里配置的触发键（slot_triggers）作为可监控白名单。
     // 这才是用户真正配置、需要上位机监控的按键（如 前进/W、左Ctrl、H 等）。
     // 仅取键盘页(0x00070000)的 usage 用于键盘控件灰显与注入过滤。
     allowed.clear();

@@ -154,7 +154,13 @@ void KeyboardWidget::paintEvent(QPaintEvent*) {
             keyGrad.setColorAt(0.0, top);
             keyGrad.setColorAt(1.0, bot);
             p.fillPath(keyPath, keyGrad);
-            p.setPen(QPen(hovered ? QColor("#5a6469") : QColor("#454c50"), 1));
+            // 可用的按键（在白名单中、当前未按下）用绿色描边突出。
+            bool available = !allowedSet_.empty() && allowedSet_.count(k.usage) > 0;
+            if (available) {
+                p.setPen(QPen(QColor("#4ade80"), 2));
+            } else {
+                p.setPen(QPen(hovered ? QColor("#5a6469") : QColor("#454c50"), 1));
+            }
             p.drawPath(keyPath);
             p.setPen(hovered ? QColor("#eef2f3") : QColor("#c7ccce")); // .kbd-key-label
         }

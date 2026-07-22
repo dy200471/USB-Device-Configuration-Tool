@@ -54,6 +54,7 @@ private:
     QLabel* statusLabel_ = nullptr;
     QLabel* fwLabel_ = nullptr;
     QPushButton* connectBtn_ = nullptr;
+    QPushButton* githubBtn_ = nullptr;
     QLabel* injectLabel_ = nullptr;
     QPlainTextEdit* logView_ = nullptr;
 };

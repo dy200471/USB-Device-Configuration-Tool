@@ -1,6 +1,7 @@
 // ============================================================
+// [注意] 通信协议已更换，本文件内容仅供参考，不可用于实际连接设备。
 // device.h —— 基于 hidapi 的设备通信层。
-// 封装：枚举/打开 JiKong K1 配置接口、发送命令帧、读取响应帧（含重试）、
+// 封装：枚举/打开 XX 配置接口、发送命令帧、读取响应帧（含重试）、
 // 以及读取全部映射、保存映射并持久化的高层流程。
 // ============================================================
 #pragma once
@@ -48,7 +49,7 @@ public:
     Device();
     ~Device();
 
-    // 打开第一个匹配的 JiKong K1 配置接口。成功返回 true。
+    // 打开第一个匹配的 XX 配置接口。成功返回 true。
     bool open();
     void close();
     bool isOpen() const { return handle_ != nullptr; }
@@ -61,7 +62,7 @@ public:
     // 读取设备上全部映射。基于 getConfig 得到的 mapping_count。
     bool getAllMappings(std::vector<Mapping>& out);
 
-    // 读取所有鼠标宏 slot 的触发键 usage（GET_SLOT_TRIGGER）。
+    // 读取所有 slot 的触发键 usage（GET_SLOT_TRIGGER）。
     // 收集每个 slot 的 usage1/usage2（触发键 + 组合键），是用户真正配置、
     // 需要上位机监控的按键集合。去重后返回。
     bool getSlotTriggerUsages(std::vector<uint32_t>& out);

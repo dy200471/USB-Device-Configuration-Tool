@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 3.16)
 project(DeviceConfigTool VERSION 1.0 LANGUAGES CXX)
 
 # ============================================================
-# HID Remapper 上位机（Qt / C++）
-# 目标：连接 JiKong K1 (RP2350) 固件，通过 USB HID Feature Report
+# USB 设备配置工具上位机（Qt / C++）
+# 目标：连接 JiKong K1 固件，通过 USB HID Feature Report
 # 读取/编辑键盘按键映射，并下发+持久化到设备。
 # 键盘 UI 复刻自 config-tool-web 的“捕获触发键”键盘 SVG 布局。
 # ============================================================
@@ -110,26 +110,24 @@ if(WIN32)
         # 若不指定 /utf-8，MSVC 会按系统 ANSI 代码页(GBK)误读中文字面量导致乱码。
         target_compile_options(hid-remapper-qt PRIVATE /utf-8)
 
-        # --- 反作弊友好的编译/链接加固 ---
+        # --- 编译/链接加固 ---
         # /DYNAMICBASE: ASLR；/HIGHENTROPYVA: 64 位高熵 ASLR；/NXCOMPAT: DEP。
         target_link_options(hid-remapper-qt PRIVATE
             /DYNAMICBASE /HIGHENTROPYVA /NXCOMPAT)
-        # Release / MinSizeRel 下不生成 PDB、不在 exe 内嵌调试目录，减少多余特征。
+        # Release / MinSizeRel 下不生成 PDB、不在 exe 内嵌调试目录。
         # /DEBUG:NONE 已确保链接器不产出 PDB，故编译期无需再刻意关闭 /Zi。
         target_link_options(hid-remapper-qt PRIVATE
             $<$<CONFIG:Release>:/DEBUG:NONE>
             $<$<CONFIG:MinSizeRel>:/DEBUG:NONE>)
-        # 控制流保护（CFG），进一步降低无名进程的可疑度。
+        # 控制流保护（CFG）。
         target_compile_options(hid-remapper-qt PRIVATE /guard:cf)
         target_link_options(hid-remapper-qt PRIVATE /guard:cf)
         # 以普通用户权限运行（asInvoker），仅在需要时由用户手动提权。
-        # 显式嵌入 asInvoker manifest，避免安装程序检测启发式自动请求管理员。
         target_sources(hid-remapper-qt PRIVATE
             "${CMAKE_CURRENT_SOURCE_DIR}/app.manifest"
             "${CMAKE_CURRENT_SOURCE_DIR}/version.rc")
     endif()
 
-    # 中性化可执行文件名：去除 "remapper" 等重映射类工具特征字符串。
     set_target_properties(hid-remapper-qt PROPERTIES OUTPUT_NAME "DeviceConfigTool")
 endif()
 

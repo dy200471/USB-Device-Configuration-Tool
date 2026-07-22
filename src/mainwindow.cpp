@@ -1,12 +1,16 @@
 #include "mainwindow.h"
 
 #include <QDateTime>
+#include <QDesktopServices>
 #include <QHBoxLayout>
+#include <QIcon>
 #include <QLabel>
 #include <QMessageBox>
 #include <QPlainTextEdit>
 #include <QPushButton>
 #include <QScrollArea>
+#include <QSize>
+#include <QUrl>
 #include <QVBoxLayout>
 #include <QWidget>
 
@@ -73,6 +77,22 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     toolbar->addSpacing(16);
     toolbar->addWidget(fwLabel_);
     toolbar->addStretch();
+
+    // 右上角 GitHub 图标按钮：点击跳转项目仓库网页。
+    githubBtn_ = new QPushButton();
+    githubBtn_->setIcon(QIcon(QStringLiteral(":/github.svg")));
+    githubBtn_->setIconSize(QSize(32, 32));
+    githubBtn_->setFixedSize(44, 44);
+    githubBtn_->setCursor(Qt::PointingHandCursor);
+    githubBtn_->setToolTip(QStringLiteral("在浏览器中打开项目 GitHub 页面"));
+    githubBtn_->setStyleSheet(QStringLiteral(
+        "QPushButton { background: transparent; border: none; }"
+        "QPushButton:hover { background: rgba(255,255,255,0.08); border-radius: 6px; }"));
+    connect(githubBtn_, &QPushButton::clicked, this, []() {
+        QDesktopServices::openUrl(QUrl(QStringLiteral(
+            "https://github.com/dy200471/USB-Device-Configuration-Tool/tree/main")));
+    });
+    toolbar->addWidget(githubBtn_);
     root->addLayout(toolbar);
 
     auto* hint = new QLabel(QStringLiteral(

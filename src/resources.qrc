@@ -3,5 +3,6 @@
   <qresource prefix="/">
     <file alias="logo.svg">logo.svg</file>
     <file alias="keyboard.ico">keyboard.ico</file>
+    <file alias="github.svg">GitHub.svg</file>
   </qresource>
 </RCC>
