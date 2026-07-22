@@ -1,0 +1,23 @@
+# 构建产物
+/build/
+build/
+*.obj
+*.o
+*.pdb
+*.ilk
+*.exe
+*.dll.a
+
+# Qt Creator / IDE 本地配置
+/.qtcreator/
+.qtcreator/
+CMakeLists.txt.user*
+*.autosave
+
+# VS / VSCode
+.vs/
+.vscode/
+
+# 系统
+Thumbs.db
+Desktop.ini

@@ -1,0 +1,35 @@
+// 版本资源：填全 FileDescription / ProductName / CompanyName 等字段，
+// 使用中性名称，避免无版本信息 + 无名进程被反作弊启发式提升观测优先级。
+#include <windows.h>
+
+// 应用程序图标（数字 ID 1，取最小 ID 使其成为 exe 的默认显示图标）。
+1 ICON "src\\keyboard.ico"
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,0
+ PRODUCTVERSION 1,0,0,0
+ FILEFLAGSMASK 0x3fL
+ FILEFLAGS 0x0L
+ FILEOS VOS_NT_WINDOWS32
+ FILETYPE VFT_APP
+ FILESUBTYPE VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080404b0" // 简体中文, Unicode
+        BEGIN
+            VALUE "CompanyName",      "Device Tools"
+            VALUE "FileDescription",  "USB 设备配置工具"
+            VALUE "FileVersion",      "1.0.0.0"
+            VALUE "InternalName",     "DeviceConfigTool"
+            VALUE "OriginalFilename", "DeviceConfigTool.exe"
+            VALUE "ProductName",      "USB 设备配置工具"
+            VALUE "ProductVersion",   "1.0.0.0"
+            VALUE "LegalCopyright",   "Copyright (C) 2026"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0804, 1200
+    END
+END

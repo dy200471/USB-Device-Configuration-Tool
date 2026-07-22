@@ -1,0 +1,7 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+  <qresource prefix="/">
+    <file alias="logo.svg">logo.svg</file>
+    <file alias="keyboard.ico">keyboard.ico</file>
+  </qresource>
+</RCC>
