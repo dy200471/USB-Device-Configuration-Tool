@@ -62,13 +62,6 @@ cmake --build build -j
    停止同步。
 4. 事件日志区显示按下/松开记录；底部状态栏显示当前连接与同步状态。
 
-## 协议一致性说明
-
-关键常量与网页 `config-tool-web/js/constants.js`、`protocol.js`、`crc.js` 对齐：
-
-- 帧长固定 `32` 字节，配置帧末尾含 CRC32 校验；
-- 帧格式：`[version][command][fields... 小端][CRC32 小端]`；
-- 通信全程走 USB HID Feature Report，命令码与字段顺序均与固件、网页版一致。
 
 ## 目录结构
 
